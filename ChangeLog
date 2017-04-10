@@ -1,0 +1,385 @@
+2010/02/08 16:50:58 fanf2
+
+  main.c      1.53 +37 -15
+
+Fix debugging/diagnosis messages, and other cockups.
+Report server's canonical name.
+--------------------------------
+2009/07/02 18:56:29 fanf2
+
+  main.c      1.52 +1 -0
+
+buf_require needs to add the used space to the desired space to get the
+actual amount of buffer that is required. If the server sends a response
+packet that is the same size as the buffer then we ask for 0 bytes of
+data, read() returns 0, and we mistakenly think the socket is closed.
+--------------------------------
+2007/04/11 19:49:21 fanf2
+
+  main.c      1.51 +9 -5
+
+improve buffer handling - avoid spurious reallocs
+--------------------------------
+2007/04/11 19:18:04 fanf2
+
+  main.c      1.50 +20 -74
+
+Strip out more server-only TLS stuff (ephemeral RSA keys and Diffie-Hellman
+parameter files). Do not use arcane callback for certificate verification.
+--------------------------------
+2007/04/11 18:50:26 fanf2
+
+  main.c      1.49 +6 -10
+
+Verify server certs by default.
+--------------------------------
+2007/04/11 18:45:49 fanf2
+
+  main.c      1.48 +1 -2
+
+remove TLS flag ignored in client mode
+--------------------------------
+2007/04/11 18:37:13 fanf2
+
+  main.c      1.47 +25 -18
+
+Remove stuff related to servers requesting clients for their TLS certificates.
+Separate server cert verification from CA cert path options, so that the
+user can ask for server cert verification using the default CA cert path.
+--------------------------------
+2007/01/04 16:46:51 fanf2
+
+  main.c      1.46 +1 -1
+
+Fix includes for OpenSSL-0.9.8 compatibility.
+--------------------------------
+2006/11/13 15:34:41 fanf2
+
+  main.c      1.45 +6 -6
+
+replace u_char with more conventional spelling
+--------------------------------
+2006/11/13 15:29:52 fanf2
+
+  main.c      1.44 +6 -3
+
+Eliminate warning about uninitialized variable.
+(gcc's data flow analysis is not so hot)
+--------------------------------
+2006/11/13 15:23:15 fanf2
+
+  main.c      1.43 +7 -0
+
+credits
+--------------------------------
+2006/11/13 15:19:08 fanf2
+
+  main.c      1.42 +5 -2
+
+avoid sprintf
+--------------------------------
+2006/11/13 15:03:22 fanf2
+
+  main.c      1.41 +0 -10
+
+remove unused function buf_unadd()
+--------------------------------
+2006/11/13 14:57:44 fanf2
+
+  main.c      1.40 +19 -13
+
+64bit-correctness and some warning fixes.
+--------------------------------
+2006/09/15 12:16:20 fanf2
+
+  Makefile    1.8 +2 -1
+
+remove the dist directory after making the tarball
+--------------------------------
+2006/09/15 12:12:48 fanf2
+
+  Makefile    1.7 +1 -0
+
+fix dist tarball rebuild
+--------------------------------
+2006/09/15 12:11:46 fanf2
+
+  Makefile    1.6 +1 -1
+
+ChangeLog dependencies
+--------------------------------
+2006/09/15 12:10:50 fanf2
+
+  Makefile    1.5 +5 -2
+
+Include a ChangeLog in the distribution tarball.
+--------------------------------
+2006/09/15 12:08:11 fanf2
+
+  main.c      1.39 +1 -1
+
+correct a comment in the CRAM-MD5 code - there's no base64 at this level
+--------------------------------
+2006/09/11 09:56:34 fanf2
+
+  main.c      1.38 +7 -2
+
+fix MX-to-A fallback logic
+--------------------------------
+2006/08/11 14:31:26 fanf2
+
+  main.c      1.37 +6 -6
+
+Some CRAM-MD5 fixes from cwrl2
+--------------------------------
+2006/07/17 14:45:31 fanf2
+
+  Makefile    1.4 +11 -6
+
+add a dist target
+--------------------------------
+2006/07/17 14:37:41 fanf2
+
+  main.c      1.36 +0 -2
+
+only one cvs id needed
+--------------------------------
+2006/07/17 14:33:20 fanf2
+
+  Makefile    1.3 +9 -2
+
+portable build
+--------------------------------
+2006/06/12 17:42:09 fanf2
+
+  main.c      1.35 +200 -104
+
+Fix some style bugs.
+Overhaul the auth code, and add a cram_md5 mechanism
+(inspired by Chris Lightfoot <chris@ex-parrot.com>).
+--------------------------------
+2005/01/21 18:52:17 fanf2
+
+  main.c      1.34 +3 -3
+
+no debugging at level 0
+--------------------------------
+2005/01/18 18:14:49 fanf2
+
+  main.c      1.33 +17 -7
+
+follow CNAME-to-MX chains
+--------------------------------
+2005/01/17 16:38:33 fanf2
+
+  main.c      1.32 +8 -4
+
+return verification result in exit status
+--------------------------------
+2004/12/02 19:25:22 fanf2
+
+  main.c      1.31 +6 -8
+
+allow to specify the MAIL FROM address in callouts
+--------------------------------
+2004/12/02 19:20:23 fanf2
+
+  main.c      1.30 +22 -9
+
+Make callback verification testing easier by pulling out the domain
+from the email address.
+--------------------------------
+2004/11/29 19:16:25 fanf2
+
+  main.c      1.29 +11 -6
+
+MX funkiness and PIPELINING diagnostics
+--------------------------------
+2004/11/29 19:03:32 fanf2
+
+  main.c      1.28 +42 -28
+
+Better pipeline status reporting.
+--------------------------------
+2004/11/29 18:42:41 fanf2
+
+  main.c      1.27 +61 -46
+
+better SMTP response checking
+--------------------------------
+2004/11/29 16:43:11 fanf2
+
+  main.c      1.26 +10 -10
+
+add some radionality to debugging levels
+--------------------------------
+2004/11/26 20:14:35 fanf2
+
+  main.c      1.25 +7 -8
+
+fewer magic numbers
+--------------------------------
+2004/11/26 20:09:05 fanf2
+
+  main.c      1.24 +4 -1
+
+better connect diagnostics when there are multiple A records
+--------------------------------
+2004/11/26 19:53:58 fanf2
+
+  main.c      1.23 +0 -4
+
+redundant code
+--------------------------------
+2004/11/26 19:51:04 fanf2
+
+  main.c      1.22 +184 -28
+
+Add a timeout for connect(2) for impatient people.
+Look up target host by MX, and attempt to connect in order of priority.
+--------------------------------
+2004/11/04 13:32:35 fanf2
+
+  main.c      1.21 +3 -2
+
+If -h and -s then say HELO after starting tls.
+--------------------------------
+2004/10/15 18:38:50 fanf2
+
+  main.c      1.20 +16 -15
+
+handle nul bytes in the input correctly
+--------------------------------
+2004/10/14 16:38:29 fanf2
+
+  main.c      1.19 +54 -27
+
+Add support for AUTH EXTERNAL. Allow initial responses to be delayed.
+Deal with some glibc compatibility problems.
+--------------------------------
+2004/08/31 11:14:00 fanf2
+
+  main.c      1.18 +2 -2
+
+fix usage message
+--------------------------------
+2004/05/13 17:53:32 fanf2
+
+  main.c      1.17 +7 -1
+
+SMTP AUTH debugging and EHLO hostname spoofing
+--------------------------------
+2004/03/12 15:19:25 fanf2
+
+  main.c      1.16 +8 -6
+
+fixes from mb245
+--------------------------------
+2004/03/01 11:19:55 fanf2
+
+  Makefile    1.2 +2 -0
+
+a system-dependent library dependency
+--------------------------------
+2004/02/10 11:36:51 fanf2
+
+  Makefile    1.1
+
+for people who can't drive gcc
+--------------------------------
+2004/02/10 11:35:52 fanf2
+
+  main.c      1.15 +2 -0
+
+add missing include
+--------------------------------
+2004/02/10 11:09:30 fanf2
+
+  main.c      1.14 +10 -0
+
+licence for distribution
+--------------------------------
+2004/02/07 19:18:19 fanf2
+
+  main.c      1.13 +54 -9
+
+a couple of SASL mechanisms
+--------------------------------
+2004/02/07 18:27:36 fanf2
+
+  main.c      1.12 +31 -12
+
+SMTP AUTH done; now for the SASL methods.
+--------------------------------
+2004/02/07 17:53:29 fanf2
+
+  main.c      1.11 +127 -39
+
+Buffer handling and error handling improvements.
+Some SMTP AUTH bits.
+--------------------------------
+2004/02/07 14:40:33 fanf2
+
+  main.c      1.10 +21 -7
+
+finish SMTP conversation cleanly on error
+--------------------------------
+2004/02/07 13:08:14 fanf2
+
+  main.c      1.9 +88 -16
+
+read and send a message
+--------------------------------
+2004/02/06 20:32:38 fanf2
+
+  main.c      1.8 +154 -104
+
+Better commenting. Better layering of SMTP IO. Rudimentary message submission.
+--------------------------------
+2004/02/06 19:44:25 fanf2
+
+  main.c      1.7 +78 -20
+
+Support STARTTLS and check for AUTH support.
+--------------------------------
+2004/02/06 18:57:07 fanf2
+
+  main.c      1.6 +262 -92
+
+Support SMTP PIPELINING.
+Do address verification and callouts.
+--------------------------------
+2004/02/06 16:20:32 fanf2
+
+  main.c      1.5 +55 -15
+
+command response checking
+--------------------------------
+2004/02/06 15:48:48 fanf2
+
+  main.c      1.4 +48 -14
+
+support for smtp commands
+--------------------------------
+2003/11/04 17:34:53 fanf2
+
+  main.c      1.3 +8 -2
+
+include CVS ID in object code, plus commenting and syntax fixes
+--------------------------------
+2003/11/03 13:06:47 fanf2
+
+  main.c      1.2 +29 -7
+
+Some fluff left over from the end of last week.
+* code formatting improvements
+* check for zero bytes in data from server
+* zero-terminate response from server
+* start some output-to-server code
+--------------------------------
+2003/10/30 20:12:27 fanf2
+
+  main.c      1.1
+
+The beginnings of an smtp test client.
+--------------------------------
