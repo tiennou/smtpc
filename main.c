@@ -454,7 +454,7 @@ tls_start(void)
 static void
 smtp_read(void)
 {
-	int n;
+	ssize_t n;
 	char *p;
 
 	buf_require(&inbuf, BUF_SPACE);
@@ -545,7 +545,7 @@ smtp_get_response(void)
 static void
 smtp_flush(void)
 {
-	int n;
+	ssize_t n;
 
 	debug(2, "smtp_flush buffer:\n%.*s", (int)outbuf.used, outbuf.start);
 	if(started_tls) {
