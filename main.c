@@ -104,7 +104,7 @@ struct auth {
 };
 
 static const char  *progname;           /*!< Program name for messages etc. */
-static char         hostname[MAXDNAME]; /*!< This machine's hostname. */
+static char         hostname[NS_MAXDNAME]; /*!< This machine's hostname. */
 
 static int          auth_delay;         /*!< Delay auth parameters. */
 static const char  *auth_method;        /*!< Authentication method. */
@@ -984,7 +984,7 @@ addr_connect(const char *h, const char *p)
 {
 	int r, s;
 	struct addrinfo ai_hints, *ai0, *ai;
-	char addr[MAXDNAME];
+	char addr[NS_MAXDNAME];
 
 	debug(1, "looking up address %s:%s", h, p);
 	memset(&ai_hints, 0, sizeof(ai_hints));
@@ -1038,8 +1038,8 @@ mx_compare(const void *a, const void *b)
 	int aaa, bbb;
 	aa = *(unsigned char *const *)a;
 	bb = *(unsigned char *const *)b;
-	GETSHORT(aaa, aa);
-	GETSHORT(bbb, bb);
+	NS_GET16(aaa, aa);
+	NS_GET16(bbb, bb);
 	return(aaa - bbb);
 }
 
@@ -1052,16 +1052,16 @@ mx_connect(const char *dom, const char *p, int depth)
 {
 	int i, s, t, anslen, namelen, rrlen;
 	unsigned char *ptr, **rrset;
-	unsigned char ans[MAXDNAME*10];
-	char name[MAXDNAME];
-	HEADER *h;
+	unsigned char ans[NS_MAXDNAME*10];
+	char name[NS_MAXDNAME];
+	ns_msg *h;
 
 	if(depth < 0) {
 		warnx("CNAME recursion too deep");
 		return(-1);
 	}
 	debug(1, "looking up MX %s", dom);
-	anslen = res_query(dom, C_IN, T_MX, ans, sizeof(ans));
+	anslen = res_query(dom, ns_c_in, ns_t_mx, ans, sizeof(ans));
 	if(anslen < 0)
 		switch(h_errno) {
 		case(HOST_NOT_FOUND):
@@ -1075,10 +1075,10 @@ mx_connect(const char *dom, const char *p, int depth)
 		default:
 			err(1, "unknown DNS error %d", h_errno);
 		}
-	h = (HEADER *)ans;
-	ptr = ans + sizeof(HEADER);
+	h = (ns_msg *)ans;
+	ptr = ans + sizeof(h);
 	/* skip over the query part */
-	for(i = ntohs(h->qdcount); i > 0; i--) {
+	for(i = ntohs(ns_msg_count(*h, ns_s_qd)); i > 0; i--) {
 		namelen = dn_expand(ans, ans + anslen, ptr,
 		    name, sizeof(name));
 		if(namelen < 0) {
@@ -1089,7 +1089,7 @@ mx_connect(const char *dom, const char *p, int depth)
 		ptr += namelen + 4;
 	}
 	/* create an index of the answer part */
-	rrlen = ntohs(h->ancount);
+	rrlen = ntohs(ns_msg_count(*h, ns_s_an));
 	rrset = malloc(rrlen * sizeof(*rrset));
 	if(rrset == NULL)
 		err(1, "malloc");
@@ -1101,8 +1101,8 @@ mx_connect(const char *dom, const char *p, int depth)
 			return(-1);
 		}
 		ptr += namelen;
-		GETSHORT(t, ptr);
-		if(t != T_MX && t != T_CNAME) {
+		NS_GET16(t, ptr);
+		if(t != ns_t_mx && t != ns_t_cname) {
 			warnx("MX answer type mismatch");
 			return(-1);
 		}
@@ -1110,18 +1110,18 @@ mx_connect(const char *dom, const char *p, int depth)
 		ptr += 8;
 		rrset[i] = ptr;
 		/* print debugging output of data */
-		if(t == T_CNAME)
+		if(t == ns_t_cname)
 			s = 0;
 		else
-			GETSHORT(s, ptr);
+			NS_GET16(s, ptr);
 		namelen = dn_expand(ans, ans + anslen, ptr,
 		    name, sizeof(name));
 		if(namelen < 0) {
 			warnx("error parsing %s target",
-			    t == T_CNAME ? "CNAME" : "MX");
+			    t == ns_t_cname ? "CNAME" : "MX");
 			return(-1);
 		}
-		if(t == T_CNAME) {
+		if(t == ns_t_cname) {
 			debug(1, "CNAME %s", name);
 			return(mx_connect(name, p, depth-1));
 		} else {
