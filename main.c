@@ -568,7 +568,6 @@ smtp_flush(void)
 static void
 smtp_vprintf(const char *fmt, va_list ap)
 {
-	char *start;
 	size_t offset;
 
 	offset = outbuf.used;
