@@ -77,14 +77,14 @@ struct buf {
  * as its state for the next step of the protocol. If the challenge is
  * not NULL then the function must return a response.
  *
- * \param state     The function's protocol state.
- * \param chall     Decoded challenge from server,
- *                  or NULL when requesting an initial response.
- * \param len_chall Length of the challenge
- *                  (which is not nul-terminated).
- * \param resp      Mechanism function returns a pointer to
- *                  a malloc()ed response string via this parameter.
- * \param len_resp  Length of the returned response string.
+ * \param state			The function's protocol state.
+ * \param challenge		Decoded challenge from server,
+ *						or NULL when requesting an initial response.
+ * \param len_challenge Length of the challenge
+ *						(which is not nul-terminated).
+ * \param response      Mechanism function returns a pointer to
+ *                      a malloc()ed response string via this parameter.
+ * \param len_response  Length of the returned response string.
  */
 typedef void *auth_fn(void *state,
     const unsigned char *challenge, size_t len_challenge,
