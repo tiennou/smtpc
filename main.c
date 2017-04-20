@@ -179,7 +179,7 @@ debug(int level, const char *fmt, ...)
 static void
 strlecpy(char *dst, size_t len, const char *start, const char *end)
 {
-	snprintf(dst, len, "%.*s", end - start, start);
+	snprintf(dst, len, "%.*s", (int)(end - start), start);
 }
 
 /**********************************************************************/
@@ -521,7 +521,7 @@ smtp_get_response(void)
 			status = i;
 		else if(status != i)
 			errx(1, "inconsistent status in %.*s",
-			    (r - p), p);
+			    (int)(r - p), p);
 
 		/* end of response? */
 		if(*q == ' ') {
