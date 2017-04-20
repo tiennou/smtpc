@@ -459,7 +459,7 @@ smtp_read(void)
 
 	buf_require(&inbuf, BUF_SPACE);
 	if(started_tls) {
-		n = SSL_read(tls, inbuf.end, inbuf.space);
+		n = SSL_read(tls, inbuf.end, (int)inbuf.space);
 		if(n < 0)
 			tls_error("SSL_read");
 		if(n == 0) {
@@ -549,7 +549,7 @@ smtp_flush(void)
 
 	debug(2, "smtp_flush buffer:\n%.*s", (int)outbuf.used, outbuf.start);
 	if(started_tls) {
-		n = SSL_write(tls, outbuf.start, outbuf.used);
+		n = SSL_write(tls, outbuf.start, (int)outbuf.used);
 		if(n <= 0)
 			tls_error("SSL_write");
 	} else {
@@ -947,7 +947,7 @@ auth_cram_md5(void *state,
 	/* Send no initial response. */
 	if(chall == NULL || len_chall == 0)
 		return(state);
-	HMAC(EVP_md5(), auth_password, auth_password_len,
+	HMAC(EVP_md5(), auth_password, (int)auth_password_len,
 	    chall, len_chall, hmac, NULL);
 	/* Response is username SPACE hex-hmac */
 	*len_resp = auth_username_len + 1 + sizeof(hmac) * 2;
