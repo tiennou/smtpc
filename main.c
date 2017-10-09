@@ -120,6 +120,8 @@ static int          timeout;            /*!< Connect timeout. */
 static int          use_tls;            /*!< Use TLS. */
 static int          verify;             /*!< Verify address(es). */
 static int          tls_no_verify;      /*!< No server cert verification. */
+static int          ipv4_only;          /*!< Only do IPv4 */
+static int          ipv6_only;          /*!< Only do IPv6 */
 
 static const char  *tls_ca_path;        /*!< TLS verification path. */
 static const char  *tls_cert;           /*!< TLS certificate filename. */
@@ -1005,6 +1007,16 @@ addr_connect(const char *h, const char *p)
 	for(ai = ai0; ai != NULL; ai = ai->ai_next) {
 		getnameinfo(ai->ai_addr, ai->ai_addrlen,
 		    addr, sizeof(addr), NULL, 0, NI_NUMERICHOST);
+
+		if (ipv4_only && ai->ai_family != PF_INET) {
+			debug(1, "skipping %s", addr);
+			continue;
+		}
+		if (ipv6_only && ai->ai_family != PF_INET6) {
+			debug(1, "skipping %s", addr);
+			continue;
+		}
+
 		debug(1, "connecting to %s", addr);
 		s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
 		if(s < 0) {
@@ -1164,7 +1176,9 @@ usage(void)
 	    "	-A	TLS certificate authority file or directory\n"
 	    "	-C	TLS client cert:key\n"
 	    "	-H	Hostname for EHLO argument\n"
-	    "	-S	Skip TLS server certificate verification\n",
+	    "	-S	Skip TLS server certificate verification\n"
+	    "	-4	Only connect over IPv4\n"
+	    "	-6	Only connect over IPv6\n",
 	    progname);
 	exit(2);
 }
@@ -1186,7 +1200,7 @@ main(int argc, char *argv[])
 	if(gethostname(hostname, sizeof(hostname)) < 0)
 		err(1, "gethostname");
 
-	while((c = getopt(argc, argv, "a:dhm:pst:vA:C:H:S")) != -1)
+	while((c = getopt(argc, argv, "a:dhm:pst:vA:C:H:S64")) != -1)
 		switch(c) {
 		case('a'):	/* AUTH parameters */
 			if(optarg[0] == ':') {
@@ -1232,6 +1246,12 @@ main(int argc, char *argv[])
 			break;
 		case('S'):	/* No TLS server cert verification. */
 			tls_no_verify++;
+			break;
+		case('4'):
+			ipv4_only = 1;
+			break;
+		case('6'):
+			ipv6_only = 1;
 			break;
 		default:
 			usage();
